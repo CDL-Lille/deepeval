@@ -31,7 +31,7 @@ class ContextGenerator:
         embedder: DeepEvalBaseEmbeddingModel,
         document_paths: Optional[List[str]] = None,
         model: Optional[Union[str, DeepEvalBaseLLM]] = None,
-        chunk_size: int = 1024,
+        chunk_size: int = 200,
         chunk_overlap: int = 0,
         max_retries: int = 3,
         filter_threshold: float = 0.5,
