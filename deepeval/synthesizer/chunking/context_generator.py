@@ -128,7 +128,7 @@ class ContextGenerator:
             contexts_per_doc, scores_per_doc = (
                 self._get_n_random_contexts_per_doc(
                     path=path,
-                    n_contexts_per_doc=min_num_context,
+                    n_contexts_per_doc=min_num_context else 1,
                     context_size=max_context_size,
                     similarity_threshold=self.similarity_threshold,
                     p_bar=p_bar,
