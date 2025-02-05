@@ -146,3 +146,48 @@ class OpenAIEmbeddingModel(DeepEvalBaseEmbeddingModel):
             return "local embeddings"
         elif self.model_name:
             return self.model_name
+
+from typing import List, Optional
+from deepeval.models import DeepEvalBaseEmbeddingModel
+from sentence_transformers import SentenceTransformer
+
+class SentenceTransformerEmbeddingModel(DeepEvalBaseEmbeddingModel):
+    def __init__(self, model: Optional[str] = "sentence-transformers/all-MiniLM-L6-v2"):
+        """
+        Initialise un modèle local de `sentence-transformers` pour générer des embeddings.
+        """
+        self.model_name = model
+        self.model = SentenceTransformer(self.model_name)
+
+    def load_model(self):
+        """
+        Charge et retourne le modèle `sentence-transformers`.
+        """
+        return self.model
+
+    def embed_text(self, text: str) -> List[float]:
+        """
+        Génère un embedding à partir d'un texte unique.
+        """
+        return self.model.encode(text).tolist()
+
+    def embed_texts(self, texts: List[str]) -> List[List[float]]:
+        """
+        Génère des embeddings pour une liste de textes.
+        """
+        return [embedding.tolist() for embedding in self.model.encode(texts)]
+
+    async def a_embed_text(self, text: str) -> List[float]:
+        """
+        Version asynchrone de `embed_text()`
+        """
+        return self.embed_text(text)
+
+    async def a_embed_texts(self, texts: List[str]) -> List[List[float]]:
+        """
+        Version asynchrone de `embed_texts()`
+        """
+        return self.embed_texts(texts)
+
+    def get_model_name(self):
+        return self.model_name
