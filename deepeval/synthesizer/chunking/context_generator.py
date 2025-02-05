@@ -499,51 +499,49 @@ class ContextGenerator:
     def evaluate_chunk(self, chunk) -> float:
         prompt = FilterTemplate.evaluate_context(chunk)
         if self.using_native_model:
-            res, _ = self.model.generate(prompt, schema=ContextScore)
-            return (res.clarity + res.depth + res.structure + res.relevance) / 4
+            res = self.model.generate(prompt, schema=ContextScore)
+            # return (res.clarity + res.depth + res.structure + res.relevance) / 4
         else:
             try:
                 res: ContextScore = self.model.generate(
                     prompt, schema=ContextScore
                 )
-                return (
-                    res.clarity + res.depth + res.structure + res.relevance
-                ) / 4
+                # return (
+                #     res.clarity + res.depth + res.structure + res.relevance
+                # ) / 4
             except TypeError:
                 res = self.model.generate(prompt)
                 data = trimAndLoadJson(res, self)
-                score = (
-                    data["clarity"]
-                    + data["depth"]
-                    + data["structure"]
-                    + data["relevance"]
-                ) / 4
-                return score
+                res = ContextScore(**data)
+
+                return (res.clarity + res.depth + res.structure + res.relevance) / 4
 
     async def a_evaluate_chunk(self, chunk) -> float:
         prompt = FilterTemplate.evaluate_context(chunk)
         if self.using_native_model:
-            res, _ = await self.model.a_generate(prompt, schema=ContextScore)
-            return (res.clarity + res.depth + res.structure + res.relevance) / 4
+            res = await self.model.a_generate(prompt, schema=ContextScore)
+            #return (res.clarity + res.depth + res.structure + res.relevance) / 4
         else:
 
             try:
                 res: ContextScore = await self.model.a_generate(
                     prompt, schema=ContextScore
                 )
-                return (
-                    res.clarity + res.depth + res.structure + res.relevance
-                ) / 4
+                # return (
+                #     res.clarity + res.depth + res.structure + res.relevance
+                # ) / 4
             except TypeError:
-                res: ContextScore = await self.model.a_generate(prompt)
+                res = await self.model.a_generate(prompt)
                 data = trimAndLoadJson(res, self)
-                score = (
-                    data["clarity"]
-                    + data["depth"]
-                    + data["structure"]
-                    + data["relevance"]
-                ) / 4
-                return score
+                # score = (
+                #     data["clarity"]
+                #     + data["depth"]
+                #     + data["structure"]
+                #     + data["relevance"]
+                # ) / 4
+                res = ContextScore(**data) 
+
+        return (res.clarity + res.depth + res.structure + res.relevance) / 4
 
     #########################################################
     ### Load Docs ###########################################
