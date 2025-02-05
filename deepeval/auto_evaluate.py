@@ -174,6 +174,7 @@ def generate_goldens(
                 )
     return goldens
 
+from deepeval.models.openai_embedding_model import SentenceTransformerEmbeddingModel
 
 def generate_goldens_from_nodes(
     doc_nodes: Dict,
@@ -188,7 +189,7 @@ def generate_goldens_from_nodes(
 ):
     # generate contexts from nodes
     context_generator = ContextGenerator(
-        embedder=OpenAIEmbeddingModel(),
+        embedder=SentenceTransformerEmbeddingModel(),
         _nodes=[node for _, node in doc_nodes.items()],
     )
     context_generator._load_nodes()

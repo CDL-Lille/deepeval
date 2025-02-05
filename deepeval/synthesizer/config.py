@@ -41,6 +41,7 @@ class StylingConfig:
     input_format: Optional[str] = None
     expected_output_format: Optional[str] = None
 
+from deepeval.models.openai_embedding_model import SentenceTransformerEmbeddingModel
 
 @dataclass
 class ContextConstructionConfig:
@@ -57,4 +58,4 @@ class ContextConstructionConfig:
     def __post_init__(self):
         self.critic_model, _ = initialize_model(self.critic_model)
         if self.embedder is None:
-            self.embedder = OpenAIEmbeddingModel()
+            self.embedder = SentenceTransformerEmbeddingModel()   
