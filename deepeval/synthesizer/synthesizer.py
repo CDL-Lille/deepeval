@@ -879,28 +879,26 @@ class Synthesizer:
         schema: BaseModel,
         model: DeepEvalBaseLLM,
     ) -> BaseModel:
-        if isinstance(model, GPTModel):
-            res, cost = model.generate(prompt)
-            if self.synthesis_cost is not None:
-                self.synthesis_cost += cost
-            data = trimAndLoadJson(res, self)
-            if schema == SyntheticDataList:
-                data_list = [SyntheticData(**item) for item in data["data"]]
-                return SyntheticDataList(data=data_list)
-            else:
-                return schema(**data)
+        # if isinstance(model, GPTModel):
+        res = model.generate(prompt)
+        data = trimAndLoadJson(res, self)
+        if schema == SyntheticDataList:
+            data_list = [SyntheticData(**item) for item in data["data"]]
+            return SyntheticDataList(data=data_list)
         else:
-            try:
-                res = model.generate(prompt, schema=schema)
-                return res
-            except TypeError:
-                res = model.generate(prompt)
-                data = trimAndLoadJson(res, self)
-                if schema == SyntheticDataList:
-                    data_list = [SyntheticData(**item) for item in data["data"]]
-                    return SyntheticDataList(data=data_list)
-                else:
-                    return schema(**data)
+            return schema(**data)
+        # else:
+        #     try:
+        #         res = model.generate(prompt, schema=schema)
+        #         return res
+        #     except TypeError:
+        #         res = model.generate(prompt)
+        #         data = trimAndLoadJson(res, self)
+        #         if schema == SyntheticDataList:
+        #             data_list = [SyntheticData(**item) for item in data["data"]]
+        #             return SyntheticDataList(data=data_list)
+        #         else:
+        #             return schema(**data)
 
     async def _a_generate_schema(
         self,
@@ -908,8 +906,8 @@ class Synthesizer:
         schema: BaseModel,
         model: DeepEvalBaseLLM,
     ) -> BaseModel:
-        if isinstance(model, GPTModel):
-            res, cost = await model.a_generate(prompt)
+        # if isinstance(model, GPTModel):
+        res = await model.a_generate(prompt)
             if self.synthesis_cost is not None:
                 self.synthesis_cost += cost
             data = trimAndLoadJson(res, self)
