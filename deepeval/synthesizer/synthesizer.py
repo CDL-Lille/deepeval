@@ -908,31 +908,28 @@ class Synthesizer:
     ) -> BaseModel:
         # if isinstance(model, GPTModel):
         res = await model.a_generate(prompt)
-            if self.synthesis_cost is not None:
-                self.synthesis_cost += cost
-            data = trimAndLoadJson(res, self)
-            if schema == SyntheticDataList:
-                data_list = [SyntheticData(**item) for item in data["data"]]
-                return SyntheticDataList(data=data_list)
-            else:
-                return schema(**data)
+        data = trimAndLoadJson(res, self)
+        if schema == SyntheticDataList:
+            data_list = [SyntheticData(**item) for item in data["data"]]
+            return SyntheticDataList(data=data_list)
         else:
-            try:
-                res = await model.a_generate(prompt, schema=schema)
-                return res
-            except TypeError:
-                res = await model.a_generate(prompt)
-                data = trimAndLoadJson(res, self)
-                if schema == SyntheticDataList:
-                    data_list = [SyntheticData(**item) for item in data["data"]]
-                    return SyntheticDataList(data=data_list)
-                else:
-                    return schema(**data)
+            return schema(**data)
+        # else:
+        #     try:
+        #         res = await model.a_generate(prompt, schema=schema)
+        #         return res
+        #     except TypeError:
+        #         res = await model.a_generate(prompt)
+        #         data = trimAndLoadJson(res, self)
+        #         if schema == SyntheticDataList:
+        #             data_list = [SyntheticData(**item) for item in data["data"]]
+        #             return SyntheticDataList(data=data_list)
+        #         else:
+        #             return schema(**data)
 
     def _generate(self, prompt: str) -> str:
         if self.using_native_model:
-            res, cost = self.model.generate(prompt, schema=Response)
-            self.synthesis_cost += cost
+            res = self.model.generate(prompt, schema=Response)
             return res.response
         else:
             try:
@@ -944,8 +941,7 @@ class Synthesizer:
 
     async def _a_generate(self, prompt: str) -> str:
         if self.using_native_model:
-            res, cost = await self.model.a_generate(prompt, schema=Response)
-            self.synthesis_cost += cost
+            res = await self.model.a_generate(prompt, schema=Response)
             return res.response
         else:
             try:
