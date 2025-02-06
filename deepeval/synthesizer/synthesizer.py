@@ -930,11 +930,11 @@ class Synthesizer:
     def _generate(self, prompt: str) -> str:
         if self.using_native_model:
             res = self.model.generate(prompt, schema=Response)
-            return res.response
+            return res
         else:
             try:
-                res: Response = self.model.generate(prompt, schema=Response)
-                return res.response
+                res = self.model.generate(prompt, schema=Response)
+                return res
             except TypeError:
                 res = self.model.generate(prompt)
                 return res
@@ -942,13 +942,13 @@ class Synthesizer:
     async def _a_generate(self, prompt: str) -> str:
         if self.using_native_model:
             res = await self.model.a_generate(prompt, schema=Response)
-            return res.response
+            return res
         else:
             try:
-                res: Response = await self.model.a_generate(
+                res = await self.model.a_generate(
                     prompt, schema=Response
                 )
-                return res.response
+                return res
             except TypeError:
                 res = await self.model.a_generate(prompt)
                 return res
